@@ -1,0 +1,133 @@
+{
+  "categories": [
+    {
+      "id": "salary",
+      "label": "Salary",
+      "icon": "💼",
+      "type": "income",
+      "color": "bg-green-500"
+    },
+    {
+      "id": "freelance",
+      "label": "Freelance",
+      "icon": "💻",
+      "type": "income",
+      "color": "bg-green-400"
+    },
+    {
+      "id": "investments",
+      "label": "Investments",
+      "icon": "📈",
+      "type": "income",
+      "color": "bg-green-600"
+    },
+    {
+      "id": "other-income",
+      "label": "Other Income",
+      "icon": "💰",
+      "type": "income",
+      "color": "bg-green-300"
+    },
+    {
+      "id": "housing",
+      "label": "Housing",
+      "icon": "🏠",
+      "type": "expense",
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "transportation",
+      "label": "Transportation",
+      "icon": "🚗",
+      "type": "expense",
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "food",
+      "label": "Food & Dining",
+      "icon": "🍽️",
+      "type": "expense",
+      "color": "bg-orange-500"
+    },
+    {
+      "id": "utilities",
+      "label": "Utilities",
+      "icon": "💡",
+      "type": "expense",
+      "color": "bg-purple-500"
+    },
+    {
+      "id": "healthcare",
+      "label": "Healthcare",
+      "icon": "🏥",
+      "type": "expense",
+      "color": "bg-red-500"
+    },
+    {
+      "id": "entertainment",
+      "label": "Entertainment",
+      "icon": "🎬",
+      "type": "expense",
+      "color": "bg-pink-500"
+    },
+    {
+      "id": "shopping",
+      "label": "Shopping",
+      "icon": "🛍️",
+      "type": "expense",
+      "color": "bg-indigo-500"
+    },
+    {
+      "id": "subscriptions",
+      "label": "Subscriptions",
+      "icon": "📱",
+      "type": "expense",
+      "color": "bg-cyan-500"
+    },
+    {
+      "id": "other-expense",
+      "label": "Other",
+      "icon": "📦",
+      "type": "expense",
+      "color": "bg-slate-500"
+    }
+  ],
+  "transactions": [],
+  "budgets": [
+    {
+      "categoryId": "food",
+      "limit": 500,
+      "period": "monthly"
+    },
+    {
+      "categoryId": "transportation",
+      "limit": 300,
+      "period": "monthly"
+    },
+    {
+      "categoryId": "utilities",
+      "limit": 200,
+      "period": "monthly"
+    },
+    {
+      "categoryId": "entertainment",
+      "limit": 200,
+      "period": "monthly"
+    },
+    {
+      "categoryId": "shopping",
+      "limit": 300,
+      "period": "monthly"
+    },
+    {
+      "categoryId": "subscriptions",
+      "limit": 100,
+      "period": "monthly"
+    },
+    {
+      "categoryId": "healthcare",
+      "limit": 150,
+      "period": "monthly"
+    }
+  ]
+}
