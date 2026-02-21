@@ -114,7 +114,7 @@ export function EnvelopeBudget({ data, month, onUpdateBudget }: EnvelopeBudgetPr
     const budget = getCategoryBudget(categoryId);
     
     if (available < 0) return { type: 'overspent', color: 'text-red-600', icon: AlertTriangleIcon };
-    if (available === 0 && budget?.assigned > 0) return { type: 'spent', color: 'text-yellow-600', icon: TrendingDownIcon };
+    if (available === 0 && (budget?.assigned || 0) > 0) return { type: 'spent', color: 'text-yellow-600', icon: TrendingDownIcon };
     if (available > 0) return { type: 'available', color: 'text-green-600', icon: CheckCircleIcon };
     return { type: 'empty', color: 'text-gray-400', icon: DollarSignIcon };
   };

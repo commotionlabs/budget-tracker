@@ -14,13 +14,15 @@ export class BudgetEngine {
    * This is income minus immediate obligations and previous month rollovers
    */
   calculateAvailableToBudget(month: string): number {
-    const previousMonth = this.getPreviousMonth(month);
-    
     // Get all income for current month
     const monthlyIncome = this.getMonthlyIncome(month);
     
-    // Get unassigned money from previous month
-    const previousUnassigned = this.getUnassignedFromPreviousMonth(previousMonth);
+    // Get unassigned money from previous month (avoid recursion)
+    const previousMonth = this.getPreviousMonth(month);
+    const previousMonthBudgets = this.data.budgets.filter(b => b.month === previousMonth);
+    const previousMonthAssigned = previousMonthBudgets.reduce((sum, b) => sum + b.assigned, 0);
+    const previousMonthIncome = this.getMonthlyIncome(previousMonth);
+    const previousUnassigned = Math.max(0, previousMonthIncome - previousMonthAssigned);
     
     // Get overspent categories from previous month (reduces available)
     const previousOverspending = this.calculateOverspending(previousMonth);
@@ -244,10 +246,7 @@ export class BudgetEngine {
       .reduce((sum, t) => sum + (t.type === 'expense' ? -t.amount : t.amount), 0);
   }
 
-  private getUnassignedFromPreviousMonth(month: string): number {
-    const summary = this.getMonthlyBudgetSummary(month);
-    return Math.max(0, summary.toBeBudgeted);
-  }
+  // Method removed to avoid circular dependency
 
   private calculateOverspending(month: string): number {
     const budgets = this.data.budgets.filter(b => b.month === month);

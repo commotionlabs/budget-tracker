@@ -63,9 +63,10 @@ export default function BudgetTracker() {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch('/api/data');
-      if (res.ok) {
-        const json = await res.json();
+      // For GitHub Pages static deployment, use localStorage
+      const savedData = localStorage.getItem('budget-tracker-data');
+      if (savedData) {
+        const json = JSON.parse(savedData);
         
         // Ensure all required fields exist with defaults
         const enhancedData: BudgetData = {
@@ -78,10 +79,20 @@ export default function BudgetTracker() {
         };
         
         setData(enhancedData);
+      } else {
+        // Use defaults if no saved data
+        setData({
+          accounts: DEFAULT_ACCOUNTS,
+          categories: DEFAULT_CATEGORIES,
+          transactions: [],
+          budgets: [],
+          goals: [],
+          settings: DEFAULT_SETTINGS
+        });
       }
     } catch (error) {
-      console.error('Failed to fetch data:', error);
-      // Use defaults if fetch fails
+      console.error('Failed to load data:', error);
+      // Use defaults if parsing fails
       setData({
         accounts: DEFAULT_ACCOUNTS,
         categories: DEFAULT_CATEGORIES,
@@ -97,11 +108,8 @@ export default function BudgetTracker() {
 
   const saveData = async (newData: BudgetData) => {
     try {
-      await fetch('/api/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newData),
-      });
+      // For GitHub Pages static deployment, use localStorage
+      localStorage.setItem('budget-tracker-data', JSON.stringify(newData));
       setData(newData);
     } catch (error) {
       console.error('Failed to save data:', error);
@@ -231,8 +239,8 @@ export default function BudgetTracker() {
   // Goal management handlers
   const handleAddGoal = (goalData: Partial<Goal>) => {
     const newGoal: Goal = {
-      id: `goal-${Date.now()}`,
-      ...goalData as Goal
+      ...goalData as Goal,
+      id: `goal-${Date.now()}`
     };
     const newData = { ...data, goals: [...data.goals, newGoal] };
     saveData(newData);

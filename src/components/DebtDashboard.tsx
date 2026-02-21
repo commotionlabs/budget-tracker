@@ -45,7 +45,7 @@ export function DebtDashboard({ data, onUpdateAccount, onUpdateSettings }: DebtD
       return sum + minimum;
     }, 0);
     
-    const payoffPlan = engine.calculateDebtPayoffPlan(extraPayment, strategy);
+    const payoffPlan = engine.calculateDebtPayoffPlan(extraPayment, strategy === 'custom' ? 'avalanche' : strategy);
     const totalInterest = payoffPlan.reduce((sum, debt) => sum + debt.totalInterest, 0);
     const maxMonths = Math.max(...payoffPlan.map(debt => debt.monthsToPayoff));
 
@@ -351,7 +351,7 @@ export function DebtDashboard({ data, onUpdateAccount, onUpdateSettings }: DebtD
                 className="w-32"
               />
               <div className="text-sm text-muted-foreground">
-                Adding {formatAmount(extraPayment)} saves {formatAmount(Math.max(0, debtOverview.totalInterest - engine.calculateDebtPayoffPlan(0, strategy).reduce((sum, d) => sum + d.totalInterest, 0)))} in interest
+                Adding {formatAmount(extraPayment)} saves {formatAmount(Math.max(0, debtOverview.totalInterest - engine.calculateDebtPayoffPlan(0, strategy === 'custom' ? 'avalanche' : strategy).reduce((sum, d) => sum + d.totalInterest, 0)))} in interest
               </div>
             </div>
           </div>

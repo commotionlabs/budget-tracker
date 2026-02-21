@@ -21,7 +21,7 @@ interface CategoriesManagerProps {
   onAddCategory: (category: Partial<Category>) => void;
   onEditCategory: (category: Category) => void;
   onDeleteCategory: (id: string) => void;
-  onUpdateBudget: (categoryId: string, limit: number) => void;
+  onUpdateBudget: (categoryId: string, assigned: number) => void;
 }
 
 export function CategoriesManager({
@@ -67,13 +67,13 @@ export function CategoriesManager({
 
   const handleStartEditBudget = (categoryId: string) => {
     const budget = getBudgetForCategory(categoryId);
-    setBudgetValue(budget ? budget.limit.toString() : '');
+    setBudgetValue(budget ? budget.assigned.toString() : '');
     setEditingBudget(categoryId);
   };
 
   const handleSaveBudget = (categoryId: string) => {
-    const limit = parseFloat(budgetValue) || 0;
-    onUpdateBudget(categoryId, limit);
+    const assigned = parseFloat(budgetValue) || 0;
+    onUpdateBudget(categoryId, assigned);
     setEditingBudget(null);
     setBudgetValue('');
   };
@@ -129,7 +129,7 @@ export function CategoriesManager({
                 onClick={() => handleStartEditBudget(category.id)}
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
-                {budget ? formatAmount(budget.limit) : 'Set budget'}
+                {budget ? formatAmount(budget.assigned) : 'Set budget'}
               </button>
             )}
           </div>

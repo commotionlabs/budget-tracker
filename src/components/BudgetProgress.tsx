@@ -36,12 +36,12 @@ export function BudgetProgress({ budgets, transactions, categories, month }: Bud
   };
 
   const sortedBudgets = [...budgets]
-    .filter(b => getCategory(b.categoryId)) // Only show budgets for existing categories
+    .filter(b => getCategory(b.categoryId) && b.assigned > 0) // Only show budgets for existing categories with assigned money
     .sort((a, b) => {
       const aSpent = getSpentByCategory(a.categoryId);
       const bSpent = getSpentByCategory(b.categoryId);
-      const aPercent = (aSpent / a.limit) * 100;
-      const bPercent = (bSpent / b.limit) * 100;
+      const aPercent = a.assigned > 0 ? (aSpent / a.assigned) * 100 : 0;
+      const bPercent = b.assigned > 0 ? (bSpent / b.assigned) * 100 : 0;
       return bPercent - aPercent;
     });
 
@@ -56,9 +56,9 @@ export function BudgetProgress({ budgets, transactions, categories, month }: Bud
           if (!category) return null;
           
           const spent = getSpentByCategory(budget.categoryId);
-          const percentage = Math.min((spent / budget.limit) * 100, 100);
-          const isOverBudget = spent > budget.limit;
-          const remaining = budget.limit - spent;
+          const percentage = budget.assigned > 0 ? Math.min((spent / budget.assigned) * 100, 100) : 0;
+          const isOverBudget = spent > budget.assigned;
+          const remaining = budget.assigned - spent;
 
           return (
             <div key={budget.categoryId} className="space-y-1.5">
@@ -71,7 +71,7 @@ export function BudgetProgress({ budgets, transactions, categories, month }: Bud
                   <span className={isOverBudget ? 'text-red-600 font-medium' : ''}>
                     {formatAmount(spent)}
                   </span>
-                  <span className="text-muted-foreground"> / {formatAmount(budget.limit)}</span>
+                  <span className="text-muted-foreground"> / {formatAmount(budget.assigned)}</span>
                 </div>
               </div>
               <Progress 
