@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Transaction, TransactionType, Category } from '@/types';
+import { Transaction, TransactionType, Category, Account } from '@/types';
 
 interface TransactionDialogProps {
   open: boolean;
@@ -26,6 +26,7 @@ interface TransactionDialogProps {
   onSave: (transaction: Partial<Transaction> & { id?: string }) => void;
   transaction?: Transaction | null;
   categories: Category[];
+  accounts?: Account[];
 }
 
 export function TransactionDialog({ 
@@ -33,13 +34,16 @@ export function TransactionDialog({
   onClose, 
   onSave, 
   transaction,
-  categories
+  categories,
+  accounts = []
 }: TransactionDialogProps) {
   const [type, setType] = useState<TransactionType>('expense');
+  const [accountId, setAccountId] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
+  const [payee, setPayee] = useState('');
 
   const incomeCategories = categories.filter(c => c.type === 'income');
   const expenseCategories = categories.filter(c => c.type === 'expense');
@@ -47,18 +51,22 @@ export function TransactionDialog({
   useEffect(() => {
     if (transaction) {
       setType(transaction.type);
+      setAccountId(transaction.accountId || (accounts[0]?.id || ''));
       setCategoryId(transaction.categoryId);
       setAmount(transaction.amount.toString());
       setDescription(transaction.description);
       setDate(transaction.date);
+      setPayee(transaction.payee || '');
     } else {
       setType('expense');
+      setAccountId(accounts[0]?.id || '');
       setCategoryId(expenseCategories[0]?.id || '');
       setAmount('');
       setDescription('');
       setDate(new Date().toISOString().split('T')[0]);
+      setPayee('');
     }
-  }, [transaction, open, expenseCategories]);
+  }, [transaction, open, accounts, expenseCategories]);
 
   // Reset category when type changes
   useEffect(() => {
@@ -72,10 +80,13 @@ export function TransactionDialog({
   const handleSave = () => {
     const transactionData: Partial<Transaction> & { id?: string } = {
       type,
+      accountId,
       categoryId,
       amount: parseFloat(amount),
       description,
       date,
+      payee,
+      isReconciled: false
     };
 
     if (transaction) {
@@ -107,6 +118,29 @@ export function TransactionDialog({
               </TabsTrigger>
             </TabsList>
           </Tabs>
+
+          {accounts.length > 1 && (
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Account</label>
+              <Select value={accountId} onValueChange={setAccountId}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Select account" />
+                </SelectTrigger>
+                <SelectContent>
+                  {accounts.map((account) => (
+                    <SelectItem key={account.id} value={account.id}>
+                      <div className="flex items-center gap-2">
+                        <span>{account.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          ({account.type.replace('_', ' ')})
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Amount</label>
@@ -149,6 +183,16 @@ export function TransactionDialog({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What was this for?"
+              className="h-10"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Payee (optional)</label>
+            <Input
+              value={payee}
+              onChange={(e) => setPayee(e.target.value)}
+              placeholder="Who did you pay?"
               className="h-10"
             />
           </div>
